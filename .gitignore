@@ -1,0 +1,7 @@
+__pycache__/*
+core/__pycache__/*
+models/__pycache__/*
+ui/__pycache__/*
+ui/dialogs/__pycache__/*
+ui/widgets/__pycache__/*
+configs/configs.json
