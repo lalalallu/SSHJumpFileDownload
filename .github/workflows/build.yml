@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-20.04, windows-latest, macos-latest]
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
@@ -35,8 +35,8 @@ jobs:
           sudo apt-get install -y \
             libxcb-cursor0 \
             libxkbcommon-x11-0 \
-            libgl1-mesa-glx \
-            libegl1-mesa
+            libgl1 \
+            libegl1
 
       - name: Install dependencies
         run: |
@@ -44,7 +44,8 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build with PyInstaller
+      - name: Build with PyInstaller (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           pyinstaller --name "SSHDownloader" \
                       --windowed \
@@ -52,6 +53,19 @@ jobs:
                       --clean \
                       --add-data "configs:configs" \
                       --add-data "README.md:." \
+                      --hidden-import "PyQt6.sip" \
+                      --hidden-import "asyncssh" \
+                      main.py
+
+      - name: Build with PyInstaller (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          pyinstaller --name "SSHDownloader" \
+                      --windowed \
+                      --onefile \
+                      --clean \
+                      --add-data "configs;configs" \
+                      --add-data "README.md;." \
                       --hidden-import "PyQt6.sip" \
                       --hidden-import "asyncssh" \
                       main.py
