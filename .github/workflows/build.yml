@@ -47,13 +47,25 @@ jobs:
       - name: Build with PyInstaller (Linux)
         if: runner.os == 'Linux'
         run: |
-          pyinstaller --name "SSHDownloader" \
-                      --windowed \
-                      --onefile \
-                      --clean \
-                      --hidden-import "PyQt6.sip" \
-                      --hidden-import "asyncssh" \
-                      main.py
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            ubuntu:20.04 \
+            bash -c "
+              apt-get update -qq &&
+              apt-get install -y -qq \
+                python3.8 python3-pip python3-venv \
+                libxcb-cursor0 libxkbcommon-x11-0 \
+                libgl1 libegl1 &&
+              python3.8 -m venv /venv &&
+              /venv/bin/pip install --upgrade pip -q &&
+              /venv/bin/pip install -r requirements.txt -q &&
+              /venv/bin/pyinstaller --name 'SSHDownloader' \
+                --windowed --onefile --clean \
+                --hidden-import 'PyQt6.sip' \
+                --hidden-import 'asyncssh' \
+                main.py
+            "
 
       - name: Build with PyInstaller (Windows)
         if: runner.os == 'Windows'
