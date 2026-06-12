@@ -2,6 +2,7 @@
 配置管理模块 - 保存和加载服务器配置
 """
 import os
+import sys
 import json
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass, asdict
@@ -10,8 +11,15 @@ from datetime import datetime
 from models.server import ServerConfig, JumpChain, AuthType
 
 
-# 配置文件路径 - 保存在当前目录
-CONFIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "configs")
+# 配置文件路径 - 保存在可执行文件同目录（打包后）或项目根目录（开发时）
+if getattr(sys, 'frozen', False):
+    # PyInstaller 打包后：configs 放在 exe 同目录
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    # 开发环境：configs 放在项目根目录
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+CONFIG_DIR = os.path.join(BASE_DIR, "configs")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "configs.json")
 
 

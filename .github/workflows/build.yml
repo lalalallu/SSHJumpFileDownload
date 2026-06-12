@@ -23,9 +23,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ensure configs directory exists
-        run: mkdir -p configs
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -54,8 +51,6 @@ jobs:
                       --windowed \
                       --onefile \
                       --clean \
-                      --add-data "configs:configs" \
-                      --add-data "README.md:." \
                       --hidden-import "PyQt6.sip" \
                       --hidden-import "asyncssh" \
                       main.py
@@ -68,8 +63,6 @@ jobs:
                       --windowed \
                       --onefile \
                       --clean \
-                      --add-data "configs;configs" \
-                      --add-data "README.md;." \
                       --hidden-import "PyQt6.sip" \
                       --hidden-import "asyncssh" \
                       main.py
