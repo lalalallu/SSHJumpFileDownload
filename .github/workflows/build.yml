@@ -15,8 +15,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-20.04, windows-latest]
+        python-version: ["3.8"]
 
     steps:
       - name: Checkout repository
@@ -44,8 +44,8 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build with PyInstaller (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Build with PyInstaller (Linux)
+        if: runner.os == 'Linux'
         run: |
           pyinstaller --name "SSHDownloader" \
                       --windowed \
