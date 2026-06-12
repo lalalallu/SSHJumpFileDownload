@@ -50,13 +50,18 @@ jobs:
           docker run --rm \
             -v "${{ github.workspace }}:/workspace" \
             -w /workspace \
+            -e QT_DEBUG_PLUGINS=1 \
             ubuntu:20.04 \
             bash -c "
               apt-get update -qq &&
               apt-get install -y -qq \
                 python3.8 python3-pip python3-venv \
-                libxcb-cursor0 libxkbcommon-x11-0 \
-                libgl1 libegl1 &&
+                libgl1 libegl1 \
+                libxcb-cursor0 libxcb-xinerama0 \
+                libxcb-icccm4 libxcb-image0 \
+                libxcb-keysyms1 libxcb-render-util0 \
+                libxkbcommon-x11-0 \
+                libdbus-1-3 libfontconfig1 &&
               python3.8 -m venv /venv &&
               /venv/bin/pip install --upgrade pip -q &&
               /venv/bin/pip install -r requirements.txt -q &&
@@ -64,6 +69,7 @@ jobs:
                 --windowed --onefile --clean \
                 --hidden-import 'PyQt6.sip' \
                 --hidden-import 'asyncssh' \
+                --collect-all PyQt6 \
                 main.py
             "
 
@@ -77,6 +83,7 @@ jobs:
                       --clean \
                       --hidden-import "PyQt6.sip" \
                       --hidden-import "asyncssh" \
+                      --collect-all PyQt6 \
                       main.py
 
       - name: Upload artifacts
